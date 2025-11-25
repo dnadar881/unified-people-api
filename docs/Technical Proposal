@@ -1,8 +1,7 @@
 Unified People Data Platform — Technical Proposal
 1. Overview
-
 This system consolidates 3 heterogeneous datasets (Apollo TSV, California CSV, Excel Part-2) into a unified master dataset, stored in PostgreSQL, and exposes a search API with authentication, rate-limiting, and credit-based access control.
-
+________________________________________
 2. Technologies Chosen & Justification
 Layer	Technology	Reason
 Processing Engine	PySpark + DuckDB	Spark handles large-scale ETL (10M+ rows). DuckDB is fast for pre-cleaning California CSV.
@@ -11,3 +10,57 @@ API Layer	FastAPI	High-performance Python framework, supports async, easy OpenAP
 Auth & Credits	PostgreSQL + FastAPI middleware	Simple, secure per-user credit tracking.
 Deployment	Docker + docker-compose	Portable, reproducible environment.
 Logging	PostgreSQL logs table + FastAPI middleware	Stores timestamps, credits used, queries, response times.
+3. Architecture Explanation (Summarized)
+Ingestion Layer
+•	PySpark ETL loads 3 datasets.
+•	Cleans, normalizes, deduplicates.
+•	Exports unified Parquet.
+•	DuckDB loads Parquet → PostgreSQL.
+Processing Layer
+•	Spark transformations:
+o	Typing normalization
+o	Phone/email sanitization
+o	Deduplication logic
+o	Column mapping to master schema
+Storage Layer
+•	PostgreSQL unified_people master table
+•	users, api_keys, credits, api_logs tables
+•	Indexes on email, phone, company, full_name
+API Layer
+•	FastAPI with 4 routers:
+o	search.py
+o	credits.py
+o	admin.py
+o	logs.py
+•	Authentication: API key in headers
+•	Credit deduction per request
+Deployment
+•	docker-compose for:
+o	API container
+o	PostgreSQL container (optional)
+•	Ready for Kubernetes or serverless.
+________________________________________
+4. Scalability Considerations
+•	PostgreSQL indexes + partitioning allow tens of millions of records.
+•	DuckDB ingestion avoids Python memory limits.
+•	FastAPI supports workers (Gunicorn/Uvicorn).
+•	If scale >100M:
+o	Migrate PostgreSQL → Citus or BigQuery.
+________________________________________
+5. Fault Tolerance
+•	Spark job retries partitions on failure.
+•	DuckDB ingestion uses batch commits.
+•	API:
+o	Connection pooling (psycopg2)
+o	Graceful error handling
+o	Logging of failed requests
+
+6. Rough Cost Estimate
+Component	Cost
+Local Notebook Dev	₹0
+Docker / compute	Free
+PostgreSQL (self-hosted)	Free
+	
+Cloud migration optional	₹1500–₹3000/month
+
+
