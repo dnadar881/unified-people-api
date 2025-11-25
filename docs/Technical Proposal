@@ -1,0 +1,13 @@
+Unified People Data Platform — Technical Proposal
+1. Overview
+
+This system consolidates 3 heterogeneous datasets (Apollo TSV, California CSV, Excel Part-2) into a unified master dataset, stored in PostgreSQL, and exposes a search API with authentication, rate-limiting, and credit-based access control.
+
+2. Technologies Chosen & Justification
+Layer	Technology	Reason
+Processing Engine	PySpark + DuckDB	Spark handles large-scale ETL (10M+ rows). DuckDB is fast for pre-cleaning California CSV.
+Storage	PostgreSQL	Reliable relational DB for API queries; compatible with indexing and ACID transactions.
+API Layer	FastAPI	High-performance Python framework, supports async, easy OpenAPI docs.
+Auth & Credits	PostgreSQL + FastAPI middleware	Simple, secure per-user credit tracking.
+Deployment	Docker + docker-compose	Portable, reproducible environment.
+Logging	PostgreSQL logs table + FastAPI middleware	Stores timestamps, credits used, queries, response times.
