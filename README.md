@@ -31,4 +31,6 @@ End-to-end system to:
 │   │   ├─ admin.py
 │   │   └─ logs.py
 │   └─ requirements.txt
-└─ sample_data/ (optional small CSVs, not full 8GB)
+└─ sample_data/ ( small CSVs, not full 8GB)
+  ## API Docs
+http://localhost:8000/docs
