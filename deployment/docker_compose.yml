@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=people_unified
+      - DB_USER=postgres
+      - DB_PASS=Home@2216
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: people_unified
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Home@2216
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
