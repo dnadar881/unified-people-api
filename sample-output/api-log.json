@@ -1,0 +1,16 @@
+[
+    {
+        "timestamp": "2025-01-24 10:11:32",
+        "endpoint": "/search",
+        "query": "q=john&limit=10",
+        "credits_used": 1,
+        "response_time_ms": 41
+    },
+    {
+        "timestamp": "2025-01-24 10:13:02",
+        "endpoint": "/search",
+        "query": "q=maria&company=TechCorp",
+        "credits_used": 1,
+        "response_time_ms": 53
+    }
+]
